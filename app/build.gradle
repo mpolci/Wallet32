@@ -1,43 +1,45 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0.0"
-
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId "com.bonsai.wallet32"
-        minSdkVersion 9
+        minSdkVersion 16
         targetSdkVersion 16
         versionCode 44
         versionName "0.3.17"
     }
     buildTypes {
         release {
-            runProguard false
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
 def localMavenRepo = 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
 
 repositories {
-    mavenRepo urls: localMavenRepo
+    maven { url 'http://maven.livotovlabs.pro/content/groups/public' }
+    maven { url localMavenRepo }
 }
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
 
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google:bitcoinj:0.11.3@jar'
     compile 'com.madgag:sc-light-jdk15on:1.47.0.2'
     compile 'com.google.guava:guava:13.0.1'
     compile 'com.google.protobuf:protobuf-java:2.5.0'
     compile 'net.jcip:jcip-annotations:1.0'
     compile 'com.google.code.findbugs:jsr305:1.3.9'
-
-    compile 'eu.livotov:zxscan:1.1@aar'
-    compile 'com.android.support:appcompat-v7:19.1.+'
+    //    compile 'eu.livotov:zxscan:1.1@aar'
     compile 'com.github.tony19:logback-android-core:1.1.1-2'
     compile 'com.github.tony19:logback-android-classic:1.1.1-2'
     compile 'org.slf4j:slf4j-api:1.7.6'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'eu.livotov.labs:zxscanlib:0.9.1@aar'
 }
