@@ -57,8 +57,6 @@ import org.bitcoinj.core.WrongNetworkException;
 import org.bitcoinj.uri.BitcoinURI;
 import org.bitcoinj.uri.BitcoinURIParseException;
 
-import eu.livotov.zxscan.ZXScanHelper;
-
 public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSender {
 
     private static Logger mLogger =
@@ -559,7 +557,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     {
         if (resultCode == RESULT_OK && requestCode == 12345)
         {
-            String scannedCode = ZXScanHelper.getScannedCode(data);
+            String scannedCode = data.getStringExtra(ScanActivity.RESULT_EXTRA_STR);
             mLogger.info("saw scannedCode " + scannedCode);
             updateToAddress(scannedCode);
         }
@@ -568,9 +566,10 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     public void scanQR(View view) {
         // CaptureActivity
         // ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
-        ZXScanHelper.setPlaySoundOnRead(false);
-        ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
-        ZXScanHelper.scan(this, 12345);
+//        ZXScanHelper.setPlaySoundOnRead(false);
+//        ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
+//        ZXScanHelper.scan(this, 12345);
+        startActivityForResult(new Intent(this, ScanActivity.class), 12345);
     }
 
     public void computeFee(View view) {

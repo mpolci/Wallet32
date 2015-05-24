@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              tools:context=".MainActivity$PlaceholderFragment">
+
+    <FrameLayout
+        android:id="@+id/scannerRoot"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:visibility="invisible">
+
+        <eu.livotov.zxscan.ScannerView
+            android:id="@+id/scanner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <TextView
+            android:id="@+id/waitLabel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:text="@string/please_wait"/>
+
+    </FrameLayout>
+</LinearLayout>

@@ -43,8 +43,6 @@ import org.bitcoinj.core.WrongNetworkException;
 import org.bitcoinj.uri.BitcoinURI;
 import org.bitcoinj.uri.BitcoinURIParseException;
 
-import eu.livotov.zxscan.ZXScanHelper;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -590,7 +588,7 @@ public class SweepKeyActivity extends BaseWalletActivity {
     {
         if (resultCode == RESULT_OK && requestCode == 12346)
         {
-            String scannedCode = ZXScanHelper.getScannedCode(data);
+            String scannedCode = data.getStringExtra(ScanActivity.RESULT_EXTRA_STR);
             mLogger.info("saw scannedCode " + scannedCode);
             updatePrivateKey(scannedCode);
         }
@@ -599,9 +597,10 @@ public class SweepKeyActivity extends BaseWalletActivity {
     public void scanQR(View view) {
         // CaptureActivity
         // ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
-        ZXScanHelper.setPlaySoundOnRead(false);
-        ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
-        ZXScanHelper.scan(this, 12346);
+//        ZXScanHelper.setPlaySoundOnRead(false);
+//        ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
+//        ZXScanHelper.scan(this, 12346);
+        startActivityForResult(new Intent(this, ScanActivity.class), 12346);
     }
 
     public void sweepKey(View view) {

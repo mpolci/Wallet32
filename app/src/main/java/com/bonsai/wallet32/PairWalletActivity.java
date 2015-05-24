@@ -40,8 +40,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import eu.livotov.zxscan.ZXScanHelper;
-
 public class PairWalletActivity extends ActionBarActivity {
 
     private static Logger mLogger =
@@ -141,7 +139,7 @@ public class PairWalletActivity extends ActionBarActivity {
             return;
         }
 
-        String scannedCode = ZXScanHelper.getScannedCode(data);
+        String scannedCode = data.getStringExtra(ScanActivity.RESULT_EXTRA_STR);
 
         JSONObject codeObj;
         try {
@@ -220,9 +218,10 @@ public class PairWalletActivity extends ActionBarActivity {
 
         // CaptureActivity
         // ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
-        ZXScanHelper.setPlaySoundOnRead(false);
-        ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
-        ZXScanHelper.scan(this, 12347);
+//        ZXScanHelper.setPlaySoundOnRead(false);
+//        ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
+//        ZXScanHelper.scan(this, 12347);
+        startActivityForResult(new Intent(this, ScanActivity.class), 12347);
     }
 }
 
