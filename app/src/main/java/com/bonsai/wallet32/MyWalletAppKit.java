@@ -17,12 +17,13 @@
 package com.bonsai.wallet32;
 
 import android.annotation.SuppressLint;
-import com.google.bitcoin.core.*;
-import com.google.bitcoin.crypto.KeyCrypter;
-import com.google.bitcoin.net.discovery.DnsDiscovery;
-import com.google.bitcoin.store.BlockStoreException;
-import com.google.bitcoin.store.SPVBlockStore;
-import com.google.bitcoin.store.WalletProtobufSerializer;
+import android.support.annotation.Nullable;
+
+import org.bitcoinj.core.*;
+import org.bitcoinj.net.discovery.DnsDiscovery;
+import org.bitcoinj.store.BlockStoreException;
+import org.bitcoinj.store.SPVBlockStore;
+import org.bitcoinj.store.WalletProtobufSerializer;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -85,15 +86,13 @@ public class MyWalletAppKit extends AbstractIdleService {
     private InputStream checkpoints;
     private boolean blockingStartup = true;
     private String userAgent, version;
-    private final KeyCrypter keyCrypter;
 
     private final long scanTime;
 
-    public MyWalletAppKit(NetworkParameters params, File directory, String filePrefix, KeyCrypter keyCrypter, long scanTime) {
+    public MyWalletAppKit(NetworkParameters params, File directory, String filePrefix, long scanTime) {
         this.params = checkNotNull(params);
         this.directory = checkNotNull(directory);
         this.filePrefix = checkNotNull(filePrefix);
-        this.keyCrypter = checkNotNull(keyCrypter);
         this.scanTime = scanTime;
     }
 
@@ -169,12 +168,22 @@ public class MyWalletAppKit extends AbstractIdleService {
     }
 
     /**
-     * <p>Override this to load all wallet extensions if any are necessary.</p>
+     * <p>Override this to add all wallet extensions if any are necessary.</p>
      *
      * <p>When this is called, chain(), store(), and peerGroup() will return the created objects, however they are not
-     * initialized/started</p>
+     * initialized/started. See also provideWalletExtensions().</p>
      */
     protected void addWalletExtensions() throws Exception { }
+
+    /**
+     * <p>Override this to provide all wallet extensions to use when deserialize the wallet.</p>
+     * @return
+     */
+    private @Nullable WalletExtension[] provideWalletExtensions() {
+        return null;
+    }
+
+
 
     /**
      * This method is invoked on a background thread after all objects are initialised, but before the peer group
@@ -209,13 +218,15 @@ public class MyWalletAppKit extends AbstractIdleService {
                 vPeerGroup.setUserAgent(userAgent, version);
             if (vWalletFile.exists()) {
                 walletStream = new FileInputStream(vWalletFile);
-                vWallet = new Wallet(params);
-                addWalletExtensions(); // All extensions must be present before we deserialize
-                new WalletProtobufSerializer().readWallet(WalletProtobufSerializer.parseToProto(walletStream), vWallet);
+//                vWallet = new Wallet(params);
+//                addWalletExtensions(); // All extensions must be present before we deserialize
+//                new WalletProtobufSerializer().readWallet(WalletProtobufSerializer.parseToProto(walletStream), vWallet);
+                vWallet = new WalletProtobufSerializer().readWallet(params, provideWalletExtensions(), WalletProtobufSerializer.parseToProto(walletStream));
+
                 if (shouldReplayWallet)
                     vWallet.clearTransactions(0);
             } else {
-                vWallet = new Wallet(params, keyCrypter);
+                vWallet = new Wallet(params);
                 // vWallet.addKey(new ECKey());
                 addWalletExtensions();
             }

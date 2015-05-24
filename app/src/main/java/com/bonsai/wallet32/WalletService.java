@@ -18,18 +18,17 @@ package com.bonsai.wallet32;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bitcoinj.core.Coin;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,28 +58,28 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.google.bitcoin.core.AbstractWalletEventListener;
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.InsufficientMoneyException;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.core.PeerGroup;
-import com.google.bitcoin.core.Sha256Hash;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionBroadcaster;
-import com.google.bitcoin.core.TransactionConfidence;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
-import com.google.bitcoin.core.TransactionInput;
-import com.google.bitcoin.core.TransactionOutPoint;
-import com.google.bitcoin.core.Utils;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.BalanceType;
-import com.google.bitcoin.core.WrongNetworkException;
-import com.google.bitcoin.crypto.KeyCrypter;
+import org.bitcoinj.core.AbstractWalletEventListener;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.InsufficientMoneyException;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.PeerGroup;
+import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionBroadcaster;
+import org.bitcoinj.core.TransactionConfidence;
+import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
+import org.bitcoinj.core.TransactionInput;
+import org.bitcoinj.core.TransactionOutPoint;
+import org.bitcoinj.core.Utils;
+import org.bitcoinj.core.Wallet;
+import org.bitcoinj.core.Wallet.BalanceType;
+import org.bitcoinj.core.WrongNetworkException;
+import org.bitcoinj.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.MnemonicCodeX;
-import com.google.bitcoin.script.Script;
-import com.google.bitcoin.wallet.WalletTransaction;
+import org.bitcoinj.script.Script;
+import org.bitcoinj.wallet.WalletTransaction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 
@@ -143,8 +142,8 @@ public class WalletService extends Service
 
     private RateUpdater			mRateUpdater;
 
-    private BigInteger			mBalanceAvailable;
-    private BigInteger			mBalanceEstimated;
+    private Coin			mBalanceAvailable;
+    private Coin			mBalanceEstimated;
 
 	private WakeLock			mWakeLock;
 
@@ -182,10 +181,10 @@ public class WalletService extends Service
             @Override
 			public void onCoinsReceived(Wallet wallet,
                                         Transaction tx,
-                                        BigInteger prevBalance,
-                                        BigInteger newBalance)
+                                        Coin prevBalance,
+                                        Coin newBalance)
             {
-                BigInteger amt = newBalance.subtract(prevBalance);
+                Coin amt = newBalance.subtract(prevBalance);
                 final long amount = amt.longValue();
 
                 WalletApplication app =
@@ -275,10 +274,10 @@ public class WalletService extends Service
             @Override
 			public void onCoinsSent(Wallet wallet,
                                     Transaction tx,
-                                    BigInteger prevBalance,
-                                    BigInteger newBalance)
+                                    Coin prevBalance,
+                                    Coin newBalance)
             {
-                BigInteger amt = prevBalance.subtract(newBalance);
+                Coin amt = prevBalance.subtract(newBalance);
                 final long amount = amt.longValue();
 
                 WalletApplication app =
@@ -500,7 +499,6 @@ public class WalletService extends Service
             mKit = new MyWalletAppKit(mParams,
                                       mApp.getWalletDir(),
                                       mApp.getWalletPrefix(),
-                                      mKeyCrypter,
                                       scanTime)
                 {
                     @Override
@@ -999,7 +997,7 @@ public class WalletService extends Service
     }
 
     static public long getDefaultFee() {
-        final BigInteger dmtf = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
+        final Coin dmtf = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
         return dmtf.longValue();
     }
 
@@ -1171,7 +1169,7 @@ public class WalletService extends Service
         mLogger.info("sweeping to " + to.toString());
 
         // Add output.
-        tx.addOutput(BigInteger.valueOf(amount), to);
+        tx.addOutput(Coin.valueOf(amount), to);
 
         WalletUtil.signTransactionInputs(tx, Transaction.SigHash.ALL, key, scripts);
 

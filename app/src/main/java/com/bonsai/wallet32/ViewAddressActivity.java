@@ -18,6 +18,7 @@ package com.bonsai.wallet32;
 import java.math.BigInteger;
 import java.util.Hashtable;
 
+import org.bitcoinj.core.Coin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.bitcoin.uri.BitcoinURI;
+import org.bitcoinj.uri.BitcoinURI;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -64,7 +65,8 @@ public class ViewAddressActivity extends BaseWalletActivity {
         mAddress = intent.getExtras().getString("address");
         mAmount = intent.getExtras().getLong("amount");
 
-        BigInteger amt = mAmount == 0 ? null : BigInteger.valueOf(mAmount);
+//        BigInteger amt = mAmount == 0 ? null : BigInteger.valueOf(mAmount);
+        Coin amt = Coin.valueOf(mAmount);
 
         mURI = BitcoinURI.convertToBitcoinURI(mAddress, amt, null, null);
 

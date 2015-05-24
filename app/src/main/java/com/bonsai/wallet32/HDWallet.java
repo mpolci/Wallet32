@@ -27,6 +27,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bitcoinj.core.Coin;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,28 +45,30 @@ import org.spongycastle.crypto.params.ParametersWithIV;
 import android.content.Context;
 
 import com.bonsai.wallet32.WalletService.AmountAndFee;
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.Base58;
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.InsufficientMoneyException;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.core.ScriptException;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionConfidence;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
-import com.google.bitcoin.core.TransactionInput;
-import com.google.bitcoin.core.TransactionOutput;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.SendRequest;
-import com.google.bitcoin.crypto.ChildNumber;
-import com.google.bitcoin.crypto.DeterministicKey;
-import com.google.bitcoin.crypto.HDKeyDerivation;
-import com.google.bitcoin.crypto.KeyCrypter;
-import com.google.bitcoin.crypto.KeyCrypterScrypt;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.Base58;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.InsufficientMoneyException;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.ScriptException;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionConfidence;
+import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
+import org.bitcoinj.core.TransactionInput;
+import org.bitcoinj.core.TransactionOutput;
+import org.bitcoinj.core.Wallet;
+import org.bitcoinj.core.Wallet.SendRequest;
+import org.bitcoinj.crypto.ChildNumber;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.crypto.HDKeyDerivation;
+import org.bitcoinj.crypto.KeyCrypter;
+import org.bitcoinj.crypto.KeyCrypterScrypt;
+import org.bitcoinj.script.Script;
+import org.bitcoinj.wallet.WalletTransaction;
 import com.google.bitcoin.crypto.MnemonicCodeX;
-import com.google.bitcoin.script.Script;
-import com.google.bitcoin.wallet.WalletTransaction;
+import org.bitcoinj.script.Script;
+import org.bitcoinj.wallet.WalletTransaction;
 
 public class HDWallet {
 
@@ -286,15 +289,15 @@ public class HDWallet {
             DeterministicKey t0 =
                 HDKeyDerivation.deriveChildKey(mMasterKey, 0);
             mWalletRoot =
-                HDKeyDerivation.deriveChildKey(t0, ChildNumber.PRIV_BIT);
+                HDKeyDerivation.deriveChildKey(t0, ChildNumber.HARDENED_BIT);
             break;
         case HDSV_STDV1:
             // BIP-0044 starts from M/44'/0'
             DeterministicKey t1 =
                 HDKeyDerivation.deriveChildKey(mMasterKey,
-                                               44 | ChildNumber.PRIV_BIT);
+                                               44 | ChildNumber.HARDENED_BIT);
             mWalletRoot =
-                HDKeyDerivation.deriveChildKey(t1, ChildNumber.PRIV_BIT);
+                HDKeyDerivation.deriveChildKey(t1, ChildNumber.HARDENED_BIT);
             break;
         default:
             throw new RuntimeException("invalid HDStructVersion");
@@ -414,15 +417,15 @@ public class HDWallet {
             DeterministicKey t0 =
                 HDKeyDerivation.deriveChildKey(mMasterKey, 0);
             mWalletRoot =
-                HDKeyDerivation.deriveChildKey(t0, ChildNumber.PRIV_BIT);
+                HDKeyDerivation.deriveChildKey(t0, ChildNumber.HARDENED_BIT);
             break;
         case HDSV_STDV1:
             // BIP-0044 starts from M/44'/0'
             DeterministicKey t1 =
                 HDKeyDerivation.deriveChildKey(mMasterKey,
-                                               44 | ChildNumber.PRIV_BIT);
+                                               44 | ChildNumber.HARDENED_BIT);
             mWalletRoot =
-                HDKeyDerivation.deriveChildKey(t1, ChildNumber.PRIV_BIT);
+                HDKeyDerivation.deriveChildKey(t1, ChildNumber.HARDENED_BIT);
             break;
         default:
             throw new RuntimeException("invalid HDStructVersion");
@@ -686,9 +689,9 @@ public class HDWallet {
         // Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);
 
-        SendRequest req = SendRequest.to(dest, BigInteger.valueOf(value));
-        req.fee = BigInteger.valueOf(fee);
-        req.feePerKb = BigInteger.ZERO;
+        SendRequest req = SendRequest.to(dest, Coin.valueOf(value));
+        req.fee = Coin.valueOf(fee);
+        req.feePerKb = Coin.ZERO;
         req.ensureMinRequiredFee = false;
         req.changeAddress = acct.nextChangeAddress();
         req.coinSelector = acct.coinSelector(spendUnconfirmed);
@@ -723,9 +726,9 @@ public class HDWallet {
         // It doesn't look like req.fee gets set to the required fee
         // when using emptyWallet.  Figure out the fee ourselves ...
         //
-        BigInteger outAmt = req.tx.getValueSentFromMe(wallet);
-        BigInteger inAmt = req.tx.getValueSentToMe(wallet);
-        BigInteger feeAmt = outAmt.subtract(inAmt);
+        Coin outAmt = req.tx.getValueSentFromMe(wallet);
+        Coin inAmt = req.tx.getValueSentToMe(wallet);
+        Coin feeAmt = outAmt.subtract(inAmt);
 
         return new AmountAndFee(inAmt.longValue(), feeAmt.longValue());
     }
@@ -743,7 +746,7 @@ public class HDWallet {
         // Pretend we are sending the bitcoin to ourselves.
         Address dest = acct.nextReceiveAddress();
             
-        SendRequest req = SendRequest.to(dest, BigInteger.valueOf(value));
+        SendRequest req = SendRequest.to(dest, Coin.valueOf(value));
         req.changeAddress = acct.nextChangeAddress();
         req.coinSelector = acct.coinSelector(spendUnconfirmed);
         req.aesKey = mAesKey;

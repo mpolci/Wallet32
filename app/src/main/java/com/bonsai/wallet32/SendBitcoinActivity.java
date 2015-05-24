@@ -19,6 +19,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bitcoinj.core.Coin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,13 +49,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bonsai.wallet32.WalletService.AmountAndFee;
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.InsufficientMoneyException;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.core.WrongNetworkException;
-import com.google.bitcoin.uri.BitcoinURI;
-import com.google.bitcoin.uri.BitcoinURIParseException;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.InsufficientMoneyException;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.WrongNetworkException;
+import org.bitcoinj.uri.BitcoinURI;
+import org.bitcoinj.uri.BitcoinURIParseException;
 
 import eu.livotov.zxscan.ZXScanHelper;
 
@@ -516,7 +517,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         try {
             BitcoinURI uri = new BitcoinURI(params, toval);
             Address addr = uri.getAddress();
-            BigInteger amt = uri.getAmount();
+            Coin amt = uri.getAmount();
 
             mToAddressEditText.setText(addr.toString(), 
                                        TextView.BufferType.EDITABLE);
