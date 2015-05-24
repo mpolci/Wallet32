@@ -41,62 +41,9 @@ Instructions for installing the alpha version are in the first post ...
 Building Wallet32
 ===============
 
-### Install zxscanlib to local maven repository
-
-    git clone git@github.com:LivotovLabs/zxscanlib.git
-
-    cd zxscanlib
-
-    patch -p1 <<"EOF"
-    --- a/build.gradle
-    +++ b/build.gradle
-    @@ -1,12 +1,38 @@
-     apply plugin: 'android-library'
-     
-    +apply plugin: 'maven'
-    +
-    +uploadArchives {
-    +    repositories {
-    +        mavenDeployer {
-    +            repository(url: mavenLocal().url)
-    +            pom.groupId = 'eu.livotov'
-    +            pom.artifactId = 'zxscan'
-    +            pom.version = '1.1'
-    +        }
-    +    }
-    +}
-    +
-    +buildscript {  
-    +    repositories {
-    +        mavenCentral()
-    +    }
-    +    dependencies {
-    +        classpath 'com.android.tools.build:gradle:0.10.+'
-    +    }
-    +}
-    +
-     dependencies {
-         compile fileTree(dir: 'libs', include: '*.jar')
-     }
-     
-     android {
-         compileSdkVersion 17
-    -    buildToolsVersion "18.0.1"
-    +    buildToolsVersion "19.1.0"
-    +
-    +    lintOptions {
-    +        abortOnError false
-    +    }
-     
-         sourceSets {
-             main {
-    EOF
-
-    gradle uploadArchives     
-
 ### Build Wallet32 with Gradle
 
-    git clone git@github.com:ksedgwic/Wallet32.git
+    git clone https://github.com/mpolci/Wallet32.git
 
     cd Wallet32
 
@@ -104,14 +51,14 @@ Building Wallet32
 
 ### Build Wallet32 with Android Studio
 
-    git clone git@github.com:ksedgwic/Wallet32.git
+    git clone https://github.com/mpolci/Wallet32.git
 
     # Run Android Studio
 
     # Import Project ...", select Wallet32 top-level directory.
 
 
-About Wallet32
+About original Wallet32
 ================
 
 Wallet32
