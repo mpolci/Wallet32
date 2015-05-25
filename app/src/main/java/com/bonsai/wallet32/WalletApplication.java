@@ -386,10 +386,11 @@ public class WalletApplication
         File walletDirFile =
             new File(getFilesDir(), getWalletPrefix() + ".walletdir");
 
-        try {
+        try (DataInputStream dis =
+                     new DataInputStream(new FileInputStream(walletDirFile))
+        ){
             int len = (int) walletDirFile.length();
-            DataInputStream dis =
-                new DataInputStream(new FileInputStream(walletDirFile));
+
             byte[] jsondata = new byte[len];
             dis.readFully(jsondata);
             String jsonstr = new String(jsondata);

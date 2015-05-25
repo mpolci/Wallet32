@@ -384,13 +384,11 @@ public class SettingsActivity extends PreferenceActivity {
                 else
                     continue;
 
-                final InputStream is = new FileInputStream(logFile);
-                final OutputStream os = new FileOutputStream(file);
-
-                Io.copy(is, os);
-
-                os.close();
-                is.close();
+                try (final InputStream is = new FileInputStream(logFile);
+                     final OutputStream os = new FileOutputStream(file);
+                ) {
+                    Io.copy(is, os);
+                }
 
                 Io.chmod(file, 0777);
 

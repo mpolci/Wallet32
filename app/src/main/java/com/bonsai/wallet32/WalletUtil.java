@@ -199,11 +199,10 @@ public class WalletUtil {
         File saltFile = new File(wallapp.getWalletDir(), "salt");
 
         byte[] salt = new byte[(int) saltFile.length()];
-        DataInputStream dis;
-		try {
-			dis = new DataInputStream(new FileInputStream(saltFile));
+
+		try (DataInputStream dis = new DataInputStream(new FileInputStream(saltFile))){
 			dis.readFully(salt);
-			dis.close();
+//			dis.close();
             // mLogger.info("read salt " + new String(Hex.encode(salt)));
             return salt;
 		} catch (FileNotFoundException ex) {
