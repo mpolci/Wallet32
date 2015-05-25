@@ -22,12 +22,15 @@ import java.io.FileOutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.spongycastle.crypto.params.KeyParameter;
 
 import android.app.Application;
@@ -36,13 +39,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.android.LogcatAppender;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.rolling.RollingFileAppender;
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+//import ch.qos.logback.classic.Level;
+//import ch.qos.logback.classic.LoggerContext;
+//import ch.qos.logback.classic.android.LogcatAppender;
+//import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+//import ch.qos.logback.classic.spi.ILoggingEvent;
+//import ch.qos.logback.core.rolling.RollingFileAppender;
+//import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 
 import org.bitcoinj.crypto.KeyCrypter;
 
@@ -433,10 +436,11 @@ public class WalletApplication
         // We can't log into the wallet specific directories because
         // logging is initialized well before we've selected one.
 
+/*
 		final File logDir = getDir("log", MODE_PRIVATE); // Context.MODE_WORLD_READABLE
 		final File logFile = new File(logDir, "wallet32.log");
 
-		final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+		final ILoggerFactory context = (ILoggerFactory) LoggerFactory.getILoggerFactory();
 
 		final PatternLayoutEncoder filePattern = new PatternLayoutEncoder();
 		filePattern.setContext(context);
@@ -478,6 +482,7 @@ public class WalletApplication
 		log.addAppender(fileAppender);
 		log.addAppender(logcatAppender);
 		log.setLevel(Level.INFO);
+*/
 	}
 }
 

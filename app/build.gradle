@@ -6,7 +6,8 @@ android {
     defaultConfig {
         applicationId "com.bonsai.wallet32"
         minSdkVersion 16
-        targetSdkVersion 16
+        targetSdkVersion 22
+        multiDexEnabled true
         versionCode 44
         versionName "0.3.17"
     }
@@ -33,16 +34,13 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.madgag:sc-light-jdk15on:1.47.0.2'
     compile 'com.google.guava:guava:16.0.1'
     compile 'com.google.protobuf:protobuf-java:2.5.0'
     compile 'net.jcip:jcip-annotations:1.0'
     compile 'com.google.code.findbugs:jsr305:2.0.1'
-    provided 'org.bitcoinj:bitcoinj-core:0.12.3'
+    compile 'org.bitcoinj:bitcoinj-core:0.12.3'
     compile 'eu.livotov.labs:zxscanlib:2.0.1@aar'
     compile 'eu.livotov.labs:camview:1.0.3@aar'
     compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.github.tony19:logback-android-core:1.1.1-2'
-    compile 'com.github.tony19:logback-android-classic:1.1.1-2'
-    compile 'org.slf4j:slf4j-api:1.7.6'
+    compile 'org.slf4j:slf4j-android:1.7.12'
 }
