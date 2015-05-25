@@ -5,7 +5,7 @@ android {
     buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId "com.bonsai.wallet32"
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 22
         multiDexEnabled true
         versionCode 44
@@ -39,8 +39,7 @@ dependencies {
     compile 'net.jcip:jcip-annotations:1.0'
     compile 'com.google.code.findbugs:jsr305:2.0.1'
     compile 'org.bitcoinj:bitcoinj-core:0.12.3'
-    compile 'eu.livotov.labs:zxscanlib:2.0.1@aar'
-    compile 'eu.livotov.labs:camview:1.0.3@aar'
+    compile ('eu.livotov.labs:zxscanlib:2.0.1@aar') {transitive=true}
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'org.slf4j:slf4j-android:1.7.12'
 }

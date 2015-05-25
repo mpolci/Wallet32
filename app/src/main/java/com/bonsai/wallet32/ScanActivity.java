@@ -20,6 +20,8 @@ public class ScanActivity extends ActionBarActivity implements ScannerView.Scann
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         embeddedScanner = (ScannerView) findViewById(R.id.scanner);
+        embeddedScanner.setPlaySound(false);
+        embeddedScanner.setScannerViewEventListener(this);
     }
 
     /**
@@ -29,24 +31,13 @@ public class ScanActivity extends ActionBarActivity implements ScannerView.Scann
     @Override
     protected void onStart() {
         super.onStart();
-        startEmbeddedScanner();
+        embeddedScanner.startScanner();
     }
 
     @Override
     protected void onStop() {
-        stopEmbeddedScanner();
-        super.onStop();
-    }
-
-    private void startEmbeddedScanner()
-    {
-//        waitLabel.setVisibility(View.VISIBLE);
-        embeddedScanner.startScanner();
-    }
-
-    private void stopEmbeddedScanner()
-    {
         embeddedScanner.stopScanner();
+        super.onStop();
     }
 
     public void onScannerReady()

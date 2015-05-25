@@ -15,21 +15,13 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <eu.livotov.zxscan.ScannerView
             android:id="@+id/scanner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
-
-        <TextView
-            android:id="@+id/waitLabel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:gravity="center"
-            android:text="@string/please_wait"/>
 
     </FrameLayout>
 </LinearLayout>
