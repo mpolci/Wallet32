@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 
 import org.bitcoinj.core.*;
+import org.bitcoinj.crypto.KeyCrypter;
 import org.bitcoinj.net.discovery.DnsDiscovery;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.store.SPVBlockStore;
@@ -38,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.crypto.params.KeyParameter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -86,13 +88,17 @@ public class MyWalletAppKit extends AbstractIdleService {
     private InputStream checkpoints;
     private boolean blockingStartup = true;
     private String userAgent, version;
+    private final KeyCrypter keyCrypter;
+    private KeyParameter aesKey;
 
     private final long scanTime;
 
-    public MyWalletAppKit(NetworkParameters params, File directory, String filePrefix, long scanTime) {
+    public MyWalletAppKit(NetworkParameters params, File directory, String filePrefix, KeyCrypter keyCrypter, KeyParameter aesKey, long scanTime) {
         this.params = checkNotNull(params);
         this.directory = checkNotNull(directory);
         this.filePrefix = checkNotNull(filePrefix);
+        this.keyCrypter = checkNotNull(keyCrypter);
+        this.aesKey = aesKey;
         this.scanTime = scanTime;
     }
 
@@ -227,6 +233,7 @@ public class MyWalletAppKit extends AbstractIdleService {
                     vWallet.clearTransactions(0);
             } else {
                 vWallet = new Wallet(params);
+                vWallet.encrypt(keyCrypter, aesKey);
                 // vWallet.addKey(new ECKey());
                 addWalletExtensions();
             }

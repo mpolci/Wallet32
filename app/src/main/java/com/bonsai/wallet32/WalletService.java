@@ -499,6 +499,8 @@ public class WalletService extends Service
             mKit = new MyWalletAppKit(mParams,
                                       mApp.getWalletDir(),
                                       mApp.getWalletPrefix(),
+                                      mKeyCrypter,
+                                      mAesKey,
                                       scanTime)
                 {
                     @Override
